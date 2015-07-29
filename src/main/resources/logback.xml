@@ -23,12 +23,12 @@
 	</appender>
 	
 	<appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>simpleSpringBoot-${bySecond}.log</file>
+		<file>simpleBatchJms-${bySecond}.log</file>
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>WARN</level>
         </filter>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>simpleSpringBoot.%d{yyyyMMdd}.log
+            <fileNamePattern>simpleBatchJms.%d{yyyyMMdd}.log
             </fileNamePattern>
         </rollingPolicy>
 		<append>false</append>
@@ -38,21 +38,6 @@
 		
 	</appender>
 
-	
-	<appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-      <file>simpleSpringBoot_sql.log</file>
-      <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-           <fileNamePattern>simpleSpringBoot.%i.log.zip</fileNamePattern>
-          <minIndex>1</minIndex>
-          <maxIndex>5</maxIndex>
-        </rollingPolicy>
-      <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-       <maxFileSize>50MB</maxFileSize>
-      </triggeringPolicy>
-     <encoder>
-        <pattern>${pattern_sql}</pattern>
-     </encoder>
-    </appender> 
 	
 	
      <appender name="ASYNC_500_FILE" class="ch.qos.logback.classic.AsyncAppender">
@@ -64,6 +49,8 @@
 	<logger name="pl.java.scalatech" level="info" />
 	<logger name="org.springframework" level="info" />
 	<logger name="org.springframework.batch" level="info" />
+	<logger name="org.springframework.jms" level="info" />
+	<logger name="org.apache.activemq" level="info" />
 	
 
     <root>
