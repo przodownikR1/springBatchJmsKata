@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:batch="http://www.springframework.org/schema/batch"
+     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation=
+        "http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+
+    <import resource="classpath:batchConfig.xml"/>
+    <bean id="writer" class="pl.java.scalatech.skip.SkipWriter" p:invalidValue="40"/>  
+    <bean id="reader" class="pl.java.scalatech.skip.SkipReader" p:invalidValue="40"/>
+    <util:list id="processorList">
+      <value>23</value>
+      <value>24</value>
+    </util:list>
+    <bean id="processor" class="pl.java.scalatech.skip.SkipProcessor" p:invalidValues-ref="processorList"/>
+    <bean id="skipListener" class="pl.java.scalatech.skip.SkipSampleListener"/>
+    
+   <batch:job id="skipFirstJob" restartable="false">
+     <batch:step id="skipFirstStep">
+       <batch:tasklet>
+         <batch:chunk  commit-interval="10" reader="reader" processor="processor" writer="writer" skip-limit="2" >
+         
+          <batch:skippable-exception-classes>
+            <batch:include class="pl.java.scalatech.skip.MySkipException"/>
+          </batch:skippable-exception-classes>
+          
+         </batch:chunk>   
+         
+       </batch:tasklet>
+       <batch:listeners>
+          <batch:listener ref="skipListener"/>
+          
+       </batch:listeners>
+     </batch:step>
+   </batch:job>
+   
+  </beans>

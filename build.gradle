@@ -1,0 +1,53 @@
+buildscript {
+  ext {
+        springBootVersion = '1.2.5.RELEASE'
+        springBatchAdminVersion = '2.0.0.BUILD-SNAPSHOT'
+    }
+    repositories {
+            mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+repositories {
+    mavenCentral()
+}
+apply plugin: 'java'
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'spring-boot-batch-jms'
+    version =  '0.0.1'
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+dependencies {
+    compile("org.springframework.boot:spring-boot-starter-batch")
+    compile("org.springframework.boot:spring-boot-starter-logging")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+    
+    compile ("com.jayway.awaitility:awaitility:1.6.3")
+    
+    compile("org.apache.activemq:activemq-core:5.7.0")
+    compile("org.apache.activemq:activemq-spring:5.9.1")
+    compile("org.apache.xbean:xbean-spring:4.2")
+    {
+        exclude module: "org.springframework:spring"
+    }
+    compile("org.springframework:spring-jms:4.1.7.RELEASE")
+    
+    
+    runtime("com.h2database:h2")
+    runtime("mysql:mysql-connector-java")
+    testCompile("junit:junit")
+    compile("org.projectlombok:lombok:1.16.4")
+    compile("com.google.guava:guava:18.0")
+    testCompile('junit:junit:4.12')
+    compile 'org.assertj:assertj-core:3.1.0'
+    testCompile("org.springframework.boot:spring-boot-starter-test")   
+}
+
+task wrapper(type: Wrapper) {}

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:batch="http://www.springframework.org/schema/batch"
+    xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd 
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/jdbc  http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd">
+        
+        
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+  
+    <alias name="transactionManager" alias="transactionBatchManager" />
+    
+    <batch:job-repository id="jobRepository" data-source="dataSource" transaction-manager="transactionBatchManager" isolation-level-for-create="DEFAULT" table-prefix="BATCH_" />
+
+    <bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" p:corePoolSize="${batch.corePool}" p:maxPoolSize="${batch.maxPoolSize}" p:queueCapacity="${batch.queueCapacity}" />
+        
+    <bean id="jobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher"   p:jobRepository-ref="jobRepository" />
+    
+     <bean id="jobRegistry" class="org.springframework.batch.core.configuration.support.MapJobRegistry" />
+      
+    <beans profile="dev">   
+         <context:property-placeholder location="classpath:batch-dev.properties" system-properties-mode="OVERRIDE" ignore-unresolvable="false" />   
+           
+	    <bean id="dataSource" primary="true" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+	        <property name="driverClassName" value="${batch.jdbc.driver}" />
+	        <property name="url" value="${batch.jdbc.url}" />
+	        <property name="username" value="${batch.jdbc.user}" />
+	        <property name="password" value="${batch.jdbc.password}" />
+	    </bean>
+    </beans>
+    
+    <beans profile="dev-prepare-db" >
+        <jdbc:initialize-database data-source="dataSource">
+          <jdbc:script location="${batch.schema.script.drop}" />
+          <jdbc:script location="${batch.schema.script}" />
+        </jdbc:initialize-database>  
+    </beans>
+    
+    <beans profile="test">   
+         <context:property-placeholder location="classpath:batch.properties" system-properties-mode="OVERRIDE" ignore-unresolvable="false" />
+          <jdbc:embedded-database id="dataSource" type="H2">
+          <jdbc:script location="${batch.schema.script.drop}" />
+          <jdbc:script location="${batch.schema.script}" />
+           </jdbc:embedded-database>   
+    </beans>
+
+</beans>
