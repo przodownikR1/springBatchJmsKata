@@ -11,14 +11,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.jms.listener.DefaultMessageListenerContainer;
 
 @Configuration
 @Slf4j
+@ComponentScan(basePackages="pl.java.scalatech.jms")
 public class JmsAmqConfig {
 
     @Bean
@@ -70,6 +73,7 @@ public class JmsAmqConfig {
     }
 
     @Bean(destroyMethod = "destroy")
+    @Profile("receiver")
     public DefaultMessageListenerContainer jmsContainer() {
         final DefaultMessageListenerContainer jmsContainer = new DefaultMessageListenerContainer();
         jmsContainer.setDestination(destination());

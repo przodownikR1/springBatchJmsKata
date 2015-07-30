@@ -31,7 +31,7 @@ public class JmsTest {
             return message;  
             
         });
-      
+      Thread.sleep(500);
     }
     
 }

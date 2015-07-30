@@ -24,7 +24,7 @@ public class EmbeddedJmsTest {
     private JmsTemplate jmsTemplate;
     
     @Test
-    public void shouldJmsWork() throws InterruptedException {
+    public void shouldJmsWork() {
         Assertions.assertThat(jmsTemplate).isNotNull();
         jmsTemplate.send(session ->
         {
@@ -35,5 +35,6 @@ public class EmbeddedJmsTest {
         });
     
     }
+   
     
 }
