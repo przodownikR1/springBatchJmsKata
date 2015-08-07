@@ -1,4 +1,4 @@
-package pl.java.scalatech.config;
+package pl.java.scalatech.config.camel.jms;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;

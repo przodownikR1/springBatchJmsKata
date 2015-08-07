@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import pl.java.scalatech.config.ActiveMQConfig;
+import pl.java.scalatech.config.camel.jms.ActiveMQConfig;
 
 @Slf4j
 @RunWith(SpringJUnit4ClassRunner.class)

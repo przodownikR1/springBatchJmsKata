@@ -45,12 +45,15 @@
         <discardingThreshold>0</discardingThreshold>
         <appender-ref ref="FILE" />
       </appender>
-
+   
 	<logger name="pl.java.scalatech" level="info" />
 	<logger name="org.springframework" level="info" />
-	<logger name="org.springframework.batch" level="info" />
 	<logger name="org.springframework.jms" level="info" />
 	<logger name="org.apache.activemq" level="info" />
+	<logger name="org.apache.camel" level="info" />
+	<logger name="myCamel" level="info" />
+	<logger name="myTrace" level="info" />
+	
 	
 
     <root>

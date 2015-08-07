@@ -10,7 +10,12 @@ public class BatchBootJmsSimple {
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(BatchBootJmsSimple.class, args);
-    }
 
+        int x = System.in.read();
+        System.err.println("+++ " + x);
+        if (x == 113) {
+            System.exit(0);
+        }
+    }
 
 }

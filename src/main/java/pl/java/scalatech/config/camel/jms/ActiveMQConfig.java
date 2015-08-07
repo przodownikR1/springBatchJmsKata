@@ -1,10 +1,6 @@
-package pl.java.scalatech.config;
+package pl.java.scalatech.config.camel.jms;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executor;
 
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
@@ -27,7 +23,7 @@ import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
 import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+
 @Configuration
 @EnableAutoConfiguration
 @EnableJms
@@ -38,11 +34,12 @@ public class ActiveMQConfig {
     private static final long RECEIVE_TIMEOUT = 10000;
     Random r = new Random();
     int allCount, successCount, failureCount;
+
     @Bean
     public Queue queueB() {
         return new ActiveMQQueue("queue.B");
     }
-    
+
     @Bean
     public Queue queueC() {
         return new ActiveMQQueue("queue.C");
@@ -53,8 +50,7 @@ public class ActiveMQConfig {
         ActiveMQConnectionFactory activeMQConnectionFactory = new ActiveMQConnectionFactory();
         activeMQConnectionFactory.setRedeliveryPolicy(redeliveryPolicy());
         activeMQConnectionFactory.setMaxThreadPoolSize(50);
-        activeMQConnectionFactory.setExceptionListener(exception ->
-        {
+        activeMQConnectionFactory.setExceptionListener(exception -> {
             log.error(exception.getLocalizedMessage());
         });
         activeMQConnectionFactory.setStatsEnabled(true);
@@ -65,7 +61,7 @@ public class ActiveMQConfig {
 
     @Bean
     public RedeliveryPolicy redeliveryPolicy() {
-         RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
+        RedeliveryPolicy redeliveryPolicy = new RedeliveryPolicy();
         redeliveryPolicy.setInitialRedeliveryDelay(1000);
         redeliveryPolicy.setMaximumRedeliveries(5);
         redeliveryPolicy.setUseExponentialBackOff(true);
@@ -87,23 +83,19 @@ public class ActiveMQConfig {
         DefaultJmsListenerContainerFactory defaultJmsListenerContainerFactory = new DefaultJmsListenerContainerFactory();
         defaultJmsListenerContainerFactory.setConnectionFactory(cachingConnectionFactory());
         defaultJmsListenerContainerFactory.setConcurrency("5-10");
-       // defaultJmsListenerContainerFactory.setTaskExecutor(executor());
+        // defaultJmsListenerContainerFactory.setTaskExecutor(executor());
         defaultJmsListenerContainerFactory.setReceiveTimeout(RECEIVE_TIMEOUT);
         defaultJmsListenerContainerFactory.setSessionAcknowledgeMode(Session.CLIENT_ACKNOWLEDGE);
 
         return defaultJmsListenerContainerFactory;
     }
 
-
     @JmsListener(destination = "queue.C", containerFactory = "defaultJmsListenerContainerFactory")
     public void messageReceiver(TextMessage textMessage) throws JMSException {
         doSomethingWithMessageContent(textMessage.getText());
-        log.info("allCount  {},successCount {} , failure {}",allCount,successCount,failureCount);
-        
-    }
+        log.info("allCount  {},successCount {} , failure {}", allCount, successCount, failureCount);
 
-   
-   
+    }
 
     private void doSomethingWithMessageContent(String text) {
         allCount++;
@@ -113,25 +105,29 @@ public class ActiveMQConfig {
         }
         successCount++;
     }
-    
-  /*  @Bean
-    Executor executor() {
-        ThreadPoolTaskExecutor threadPoolExecutor = new ThreadPoolTaskExecutor();
-        threadPoolExecutor.setMaxPoolSize(50);
-        threadPoolExecutor.setQueueCapacity(100);
-        threadPoolExecutor.setCorePoolSize(80);
-        threadPoolExecutor.setKeepAliveSeconds(600);
-        return threadPoolExecutor;
-    }*/
 
-  /*  @Bean(name="jmsTemplateB")
-    JmsTemplate jmsTemplateB(ConnectionFactory connectionFactory) {
-        JmsTemplate jmsTemplate = new JmsTemplate();
-        jmsTemplate.setConnectionFactory(connectionFactory);
-        jmsTemplate.setDefaultDestinationName("queue.B");
-        return jmsTemplate;
-    }*/
-    @Bean(name="jmsTemplateC")
+    /*
+     * @Bean
+     * Executor executor() {
+     * ThreadPoolTaskExecutor threadPoolExecutor = new ThreadPoolTaskExecutor();
+     * threadPoolExecutor.setMaxPoolSize(50);
+     * threadPoolExecutor.setQueueCapacity(100);
+     * threadPoolExecutor.setCorePoolSize(80);
+     * threadPoolExecutor.setKeepAliveSeconds(600);
+     * return threadPoolExecutor;
+     * }
+     */
+
+    /*
+     * @Bean(name="jmsTemplateB")
+     * JmsTemplate jmsTemplateB(ConnectionFactory connectionFactory) {
+     * JmsTemplate jmsTemplate = new JmsTemplate();
+     * jmsTemplate.setConnectionFactory(connectionFactory);
+     * jmsTemplate.setDefaultDestinationName("queue.B");
+     * return jmsTemplate;
+     * }
+     */
+    @Bean(name = "jmsTemplateC")
     JmsTemplate jmsTemplateC(ConnectionFactory connectionFactory) {
         JmsTemplate jmsTemplate = new JmsTemplate();
         jmsTemplate.setConnectionFactory(connectionFactory);
